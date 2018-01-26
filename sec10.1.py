@@ -27,8 +27,23 @@ def fix_point(x):
     print(y)
 
 
+def fix_point_acc(x):
+    y = np.zeros(len(x))
+    while True:
+        y[0] = math.cos(x[1] * x[2]) / 3.0 + 1.0 / 6.0
+        y[1] = math.sqrt(y[0] * y[0] + math.sin(x[2]) + 1.06) / 9.0 - 0.1
+        y[2] = -math.exp(-y[0] * y[1]) / 20.0 - (10.0 * math.pi - 3.0) / 60.0
+        if linalg.norm(x - y, np.inf) < TOR:
+            break
+        x = y
+
+    print(y)
+
+
 def main():
-    fix_point(np.array([0.1, 0.1, -0.1]))
+    x0 = np.array([0.1, 0.1, -0.1])
+    fix_point(x0)
+    fix_point_acc(x0)
     return
 
 
