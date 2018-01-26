@@ -43,20 +43,24 @@ class FixedPoint(FixedPointMethod):
         :param x: x_0 as described
         :return: the minimizer x* of f
         """
-        df = pd.DataFrame(columns=['x' + str(i + 1) for i in range(len(x))] + ['residual'])
+        df = pd.DataFrame(columns=['x' + str(i + 1) for i in range(len(x))] + ['residual', 'actual-residual'])
 
         row = len(df)
-        df.loc[row] = [xe for xe in x] + [np.nan]
+        df.loc[row] = [xe for xe in x] + [np.nan, np.nan]
 
         while True:
             y = self.f(x)
             residual = linalg.norm(x - y, np.inf)
+            x = y
 
             row = len(df)
-            df.loc[row] = [ye for ye in y] + [residual]
+            df.loc[row] = [ye for ye in y] + [residual, np.nan]
             if residual < TOR:
                 break
-            x = y
+
+        for i in range(len(df)):
+            xk = np.array([df.loc[i][j] for j in range(len(x))])
+            df.loc[i][4] = linalg.norm(x - xk, np.inf)
 
         print(df)
 
@@ -80,19 +84,23 @@ class FixedPointAcceleration(FixedPointMethod):
         :param x: x_0 as described
         :return: the minimizer x* of f
         """
-        df = pd.DataFrame(columns=['x' + str(i + 1) for i in range(len(x))] + ['residual'])
+        df = pd.DataFrame(columns=['x' + str(i + 1) for i in range(len(x))] + ['residual', 'actual-residual'])
 
         row = len(df)
-        df.loc[row] = [xe for xe in x] + [np.nan]
+        df.loc[row] = [xe for xe in x] + [np.nan, np.nan]
         while True:
             y = self.f(x)
             residual = linalg.norm(x - y, np.inf)
+            x = y
 
             row = len(df)
-            df.loc[row] = [ye for ye in y] + [residual]
+            df.loc[row] = [ye for ye in y] + [residual, np.nan]
             if residual < TOR:
                 break
-            x = y
+
+        for i in range(len(df)):
+            xk = np.array([df.loc[i][j] for j in range(len(x))])
+            df.loc[i][4] = linalg.norm(x - xk, np.inf)
 
         print(df)
 

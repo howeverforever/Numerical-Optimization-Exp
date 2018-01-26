@@ -60,10 +60,10 @@ class Newton(NewtonMethod):
         :param x: x_0 as described
         :return: the minimizer x* of f
         """
-        df = pd.DataFrame(columns=['x' + str(i + 1) for i in range(len(x))] + ['residual'])
+        df = pd.DataFrame(columns=['x' + str(i + 1) for i in range(len(x))] + ['residual', 'actual-residual'])
 
         row = len(df)
-        df.loc[row] = [xe for xe in x] + [np.nan]
+        df.loc[row] = [xe for xe in x] + [np.nan, np.nan]
 
         while True:
             jac = self.jacobian(x)
@@ -71,11 +71,16 @@ class Newton(NewtonMethod):
             y = linalg.solve(jac, f)
             nx = x + y
             residual = linalg.norm(x - nx, np.inf)
+            x = nx
+            
             row = len(df)
-            df.loc[row] = [nxe for nxe in nx] + [residual]
+            df.loc[row] = [nxe for nxe in nx] + [residual, np.nan]
             if residual < TOR:
                 break
-            x = nx
+
+        for i in range(len(df)):
+            xk = np.array([df.loc[i][j] for j in range(len(x))])
+            df.loc[i][4] = linalg.norm(x - xk, np.inf)
 
         print(df)
 
