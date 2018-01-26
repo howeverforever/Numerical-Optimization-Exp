@@ -72,7 +72,7 @@ class Newton(NewtonMethod):
             nx = x + y
             residual = linalg.norm(x - nx, np.inf)
             x = nx
-            
+
             row = len(df)
             df.loc[row] = [nxe for nxe in nx] + [residual, np.nan]
             if residual < TOR:

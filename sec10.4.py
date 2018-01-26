@@ -21,6 +21,14 @@ class SteepestDescentMethod(object):
         return NotImplementedError('Implement f()!')
 
     @abstractmethod
+    def g(self, x):
+        return NotImplementedError('Implement g()!')
+
+    @abstractmethod
+    def grad_g(self, x):
+        return NotImplementedError('Implement grad_g()!')
+
+    @abstractmethod
     def jacobian(self, x):
         return NotImplementedError('Implement jacobian()!')
 
